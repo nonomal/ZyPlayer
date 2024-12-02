@@ -1,8 +1,5 @@
 out
 dist
-release
-dist-electron
-dist_electron
 pnpm-lock.yaml
 LICENSE.md
 tsconfig.json
