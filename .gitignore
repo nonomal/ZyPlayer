@@ -1,13 +1,21 @@
-node_modules
+# OS specific files
 .DS_Store
+
+# dependencies manager
+node_modules/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
 
 # build files
 es/
 lib/
 dist/
-dist-electron/
-dist_electron/
-release/
+out/
 typings/
 
 _site
@@ -21,8 +29,14 @@ yarn-error.log
 *.zip
 .history
 .stylelintcache
+
+.env.local
+.env.*.local
+
+# dev files
+thumbnail/
+
+# lock文件
 yarn.lock
 package-lock.json
 pnpm-lock.yaml
-.env.local
-.env.*.local
