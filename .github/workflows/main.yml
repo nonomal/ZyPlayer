@@ -1,26 +1,30 @@
 name: Build/release
 
-on: push
+on:
+  push:
+    branches:
+      - main
 
 jobs:
   release:
     runs-on: ${{ matrix.os }}
 
     strategy:
+      fail-fast: false
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
       - name: Check out Git repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: "recursive"
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.4.1
+      - name: Install Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: 16
-          cache: 'yarn'
+          node-version: 'latest'
+          # cache: 'yarn'
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1.6.0
@@ -28,25 +32,31 @@ jobs:
           # GitHub token, automatically provided to the action
           # (No need to define this secret in the repo settings)
           github_token: ${{ secrets.access_token }}
-          build_script_name: 'electron:prebuild'
+          # build_script_name: 'electron:prebuild'
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
           release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-      
-      - uses: actions/upload-artifact@v3
+
+      - name: Upload Artifact (macOS)
+        uses: actions/upload-artifact@v4
         with:
-          name: ZYPlayer-mac
-          path: dist_electron/*-universal.dmg
+          name: zyplayer-mac
+          path: ./dist/*-mac-*.dmg
           if-no-files-found: ignore
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifact (Windows)
+        uses: actions/upload-artifact@v4
         with:
-          name: ZYPlayer-win
-          path: dist_electron/*Setup*.exe
+          name: zyplayer-win
+          path: ./dist/*-win-*.exe
           if-no-files-found: ignore
 
-      - uses: actions/upload-artifact@v3
+      - name: Upload Artifact (Linux)
+        uses: actions/upload-artifact@v4
         with:
-          name: ZYPlayer-linux
-          path: dist_electron/*.AppImage
+          name: zyplayer-linux
+          path: |
+            ./dist/*.AppImage
+            ./dist/*.deb
+            ./dist/*.rpm
           if-no-files-found: ignore
